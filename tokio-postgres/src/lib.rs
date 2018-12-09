@@ -44,32 +44,32 @@ where
 pub struct Client(proto::Client);
 
 impl Client {
-    pub fn prepare(&mut self, query: &str) -> Prepare {
+    pub fn prepare(&self, query: &str) -> Prepare {
         self.prepare_typed(query, &[])
     }
 
-    pub fn prepare_typed(&mut self, query: &str, param_types: &[Type]) -> Prepare {
+    pub fn prepare_typed(&self, query: &str, param_types: &[Type]) -> Prepare {
         Prepare(self.0.prepare(next_statement(), query, param_types))
     }
 
-    pub fn execute(&mut self, statement: &Statement, params: &[&dyn ToSql]) -> Execute {
+    pub fn execute(&self, statement: &Statement, params: &[&dyn ToSql]) -> Execute {
         Execute(self.0.execute(&statement.0, params))
     }
 
-    pub fn query(&mut self, statement: &Statement, params: &[&dyn ToSql]) -> Query {
+    pub fn query(&self, statement: &Statement, params: &[&dyn ToSql]) -> Query {
         Query(self.0.query(&statement.0, params))
     }
 
-    pub fn bind(&mut self, statement: &Statement, params: &[&dyn ToSql]) -> Bind {
+    pub fn bind(&self, statement: &Statement, params: &[&dyn ToSql]) -> Bind {
         Bind(self.0.bind(&statement.0, next_portal(), params))
     }
 
-    pub fn query_portal(&mut self, portal: &Portal, max_rows: i32) -> QueryPortal {
+    pub fn query_portal(&self, portal: &Portal, max_rows: i32) -> QueryPortal {
         QueryPortal(self.0.query_portal(&portal.0, max_rows))
     }
 
     pub fn copy_in<S>(
-        &mut self,
+        &self,
         statement: &Statement,
         params: &[&dyn ToSql],
         stream: S,
@@ -84,15 +84,15 @@ impl Client {
         CopyIn(self.0.copy_in(&statement.0, params, stream))
     }
 
-    pub fn copy_out(&mut self, statement: &Statement, params: &[&dyn ToSql]) -> CopyOut {
+    pub fn copy_out(&self, statement: &Statement, params: &[&dyn ToSql]) -> CopyOut {
         CopyOut(self.0.copy_out(&statement.0, params))
     }
 
-    pub fn transaction(&mut self) -> TransactionBuilder {
+    pub fn transaction(&self) -> TransactionBuilder {
         TransactionBuilder(self.0.clone())
     }
 
-    pub fn batch_execute(&mut self, query: &str) -> BatchExecute {
+    pub fn batch_execute(&self, query: &str) -> BatchExecute {
         BatchExecute(self.0.batch_execute(query))
     }
 }
